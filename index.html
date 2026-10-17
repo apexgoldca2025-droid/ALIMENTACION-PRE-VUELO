@@ -12,6 +12,7 @@
             --text: #f8fafc;
             --danger: #ef4444;
             --success: #22c55e;
+            --author-color: #f59e0b;
         }
 
         body {
@@ -31,7 +32,25 @@
             margin-bottom: 20px;
         }
 
-        h1 { color: var(--accent); margin-bottom: 5px; }
+        h1 { 
+            color: var(--accent); 
+            margin-bottom: 5px; 
+            font-size: 2em;
+        }
+
+        .author-tag {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--author-color);
+            border: 1px solid var(--author-color);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+            margin-bottom: 12px;
+        }
 
         .container {
             display: grid;
@@ -161,12 +180,20 @@
         }
         .badge-danger { background: var(--danger); color: white; }
         .badge-success { background: var(--success); color: white; }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: #64748b;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>✈️ NutriFlight: Física & Digestión en Cabina</h1>
+        <div class="author-tag">Página creada por S1. ALFREDO BELANDRIA</div>
         <p>Selecciona la comida previa a tu vuelo y simula el efecto del ascenso en la expansión de los gases digestivos.</p>
     </header>
 
@@ -201,6 +228,10 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <p>Desarrollado para instrucción sobre fisiología del vuelo y nutrición aeronáutica.</p>
+    </footer>
 
     <script>
         const alimentos = [
@@ -298,7 +329,7 @@
                     feedbackArea.innerHTML = `
                         ${estado}
                         <hr style="border-color: #334155; margin: 10px 0;">
-                        <p><strong>Explicación Científica:</strong> Al ascender, la presión de cabina cae. Por la física de gases, el volumen atrapado en el estómago/intestino se expande hasta un <strong>30%</strong>.</p>
+                        <p><strong>Explicación Científica:</strong> Al ascender, la presión de cabina cae. Por la física de gases (Ley de Boyle), el volumen atrapado en el estómago/intestino se expande hasta un <strong>30%</strong>.</p>
                         <p><strong>Resumen de tu menú:</strong></p>
                         ${detalles.join('<br>')}
                     `;
