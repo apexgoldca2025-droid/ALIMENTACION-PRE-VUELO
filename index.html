@@ -192,7 +192,7 @@
 <body>
 
     <header>
-        <h1>✈️ NutriFlight: Física & Digestión en Cabina</h1>
+        <h1>Física y Digestión en Cabina</h1>
         <div class="author-tag">Página creada por S1. ALFREDO BELANDRIA</div>
         <p>Selecciona la comida previa a tu vuelo y simula el efecto del ascenso en la expansión de los gases digestivos.</p>
     </header>
@@ -205,7 +205,7 @@
             <div class="food-grid" id="foodGrid">
                 <!-- Generado dinámicamente con JS -->
             </div>
-            <button class="btn-action" onclick="simularVuelo()">🛫 Iniciar Vuelo y Despegue</button>
+            <button class="btn-action" onclick="simularVuelo()">🛫 Iniciar Vuelo</button>
         </div>
 
         <!-- SECCIÓN DE SIMULACIÓN VISUAL -->
@@ -213,7 +213,7 @@
             <h2>🎈 Simulación de Presión Digestiva</h2>
             <div class="stomach-visualizer">
                 <div class="altitude-indicator" id="altimeter">Altitud: 0 ft</div>
-                <div class="gas-bubble" id="gasBubble">GAS</div>
+                <div class="gas-bubble" id="gasBubble">GASES</div>
             </div>
 
             <div>
@@ -230,7 +230,7 @@
     </div>
 
     <footer>
-        <p>Desarrollado para instrucción sobre fisiología del vuelo y nutrición aeronáutica.</p>
+        <p>Desarrollado para la instrucción sobre fisiología del vuelo y nutrición aeronáutica.</p>
     </footer>
 
     <script>
@@ -240,7 +240,7 @@
             { id: 3, nombre: "🍌 Guineo / Banano maduro", gas: 0, tipo: "ok", desc: "Baja fermentación, rico en potasio." },
             { id: 4, nombre: "🥦 Brócoli / Coliflor", gas: 30, tipo: "bad", desc: "Vegetal crucífero que produce abundante gas." },
             { id: 5, nombre: "🍚 Arroz blanco / Papa", gas: 0, tipo: "ok", desc: "Carbohidrato de fácil digestión." },
-            { id: 6, nombre: "🥤 Refresco / Gas", gas: 40, tipo: "bad", desc: "Introduce gas directamente en la cavidad gástrica." },
+            { id: 6, nombre: "🥤 Coca-Cola/Pepsi", gas: 40, tipo: "bad", desc: "Introduce gas directamente en la cavidad gástrica." },
             { id: 7, nombre: "🍬 Chicle / Caramelos", gas: 20, tipo: "bad", desc: "Provoca aerofagia (tragar aire involuntariamente)." },
             { id: 8, nombre: "💧 Agua mineral", gas: 0, tipo: "ok", desc: "Excelente hidratación sin aporte de gas." }
         ];
@@ -304,7 +304,7 @@
                 if (altitud >= 35000) {
                     clearInterval(interval);
                     
-                    // Ley de Boyle: Al disminuir la presión atmosférica, el gas se expande (un ~30%)
+                    // Ley de Boyle: Al disminuir la presión atmosférica, los gases se expanden (un ~30%)
                     const factorExpansion = 1.30; 
                     const expansionFinal = Math.min(nivelGasBase * factorExpansion, 100);
 
