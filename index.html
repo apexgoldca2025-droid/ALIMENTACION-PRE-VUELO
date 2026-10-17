@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador: Expansión de Gases y Alimentación Aeronáutica</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text: #f8fafc;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        h1 { color: var(--accent); margin-bottom: 5px; }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .food-btn {
+            background: #334155;
+            color: white;
+            border: 2px solid transparent;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .food-btn.selected {
+            border-color: var(--accent);
+            background: #0284c7;
+        }
+
+        .stomach-visualizer {
+            height: 220px;
+            background: #090d16;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+        }
+
+        .gas-bubble {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, rgba(239, 68, 68, 0.2) 70%);
+            border-radius: 50%;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .altitude-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: var(--accent);
+        }
+
+        .btn-action {
+            width: 100%;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-action:hover { background: #7dd3fc; }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #334155;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--success);
+            transition: width 1.5s ease-out, background-color 1.5s;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .badge-danger { background: var(--danger); color: white; }
+        .badge-success { background: var(--success); color: white; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>✈️ NutriFlight: Física & Digestión en Cabina</h1>
+        <p>Selecciona la comida previa a tu vuelo y simula el efecto del ascenso en la expansión de los gases digestivos.</p>
+    </header>
+
+    <div class="container">
+        <!-- SECCIÓN DE SELECCIÓN DE ALIMENTOS -->
+        <div class="card">
+            <h2>🍽️ Menú Pre-Vuelo</h2>
+            <p>Selecciona los alimentos que consumirás antes de abordar:</p>
+            <div class="food-grid" id="foodGrid">
+                <!-- Generado dinámicamente con JS -->
+            </div>
+            <button class="btn-action" onclick="simularVuelo()">🛫 Iniciar Vuelo y Despegue</button>
+        </div>
+
+        <!-- SECCIÓN DE SIMULACIÓN VISUAL -->
+        <div class="card">
+            <h2>🎈 Simulación de Presión Digestiva</h2>
+            <div class="stomach-visualizer">
+                <div class="altitude-indicator" id="altimeter">Altitud: 0 ft</div>
+                <div class="gas-bubble" id="gasBubble">GAS</div>
+            </div>
+
+            <div>
+                <label>Nivel de Distensión Abdominal / Hinchazón:</label>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="bloatMeter"></div>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedbackArea">
+                <p><em>Arma tu menú y presiona "Iniciar Vuelo" para ver la simulación.</em></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const alimentos = [
+            { id: 1, nombre: "🍗 Pollo a la plancha", gas: 0, tipo: "ok", desc: "Proteína magra, digestión rápida." },
+            { id: 2, nombre: "🫘 Caraotas / Lentejas", gas: 35, tipo: "bad", desc: "Alta fermentación, genera gran cantidad de gas intestinal." },
+            { id: 3, nombre: "🍌 Guineo / Banano maduro", gas: 0, tipo: "ok", desc: "Baja fermentación, rico en potasio." },
+            { id: 4, nombre: "🥦 Brócoli / Coliflor", gas: 30, tipo: "bad", desc: "Vegetal crucífero que produce abundante gas." },
+            { id: 5, nombre: "🍚 Arroz blanco / Papa", gas: 0, tipo: "ok", desc: "Carbohidrato de fácil digestión." },
+            { id: 6, nombre: "🥤 Refresco / Gas", gas: 40, tipo: "bad", desc: "Introduce gas directamente en la cavidad gástrica." },
+            { id: 7, nombre: "🍬 Chicle / Caramelos", gas: 20, tipo: "bad", desc: "Provoca aerofagia (tragar aire involuntariamente)." },
+            { id: 8, nombre: "💧 Agua mineral", gas: 0, tipo: "ok", desc: "Excelente hidratación sin aporte de gas." }
+        ];
+
+        let seleccionados = [];
+
+        function renderMenu() {
+            const grid = document.getElementById('foodGrid');
+            grid.innerHTML = '';
+            alimentos.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = `food-btn ${seleccionados.includes(item.id) ? 'selected' : ''}`;
+                btn.innerHTML = `${item.nombre}`;
+                btn.onclick = () => toggleFood(item.id);
+                grid.appendChild(btn);
+            });
+        }
+
+        function toggleFood(id) {
+            if (seleccionados.includes(id)) {
+                seleccionados = seleccionados.filter(i => i !== id);
+            } else {
+                seleccionados.push(id);
+            }
+            renderMenu();
+        }
+
+        function simularVuelo() {
+            if (seleccionados.length === 0) {
+                alert("Por favor, selecciona al menos un alimento antes de despegar.");
+                return;
+            }
+
+            const altimeter = document.getElementById('altimeter');
+            const bubble = document.getElementById('gasBubble');
+            const bloatMeter = document.getElementById('bloatMeter');
+            const feedbackArea = document.getElementById('feedbackArea');
+
+            // Reset
+            altimeter.innerText = "Altitud: 0 ft";
+            bubble.style.transform = "scale(1)";
+            bloatMeter.style.width = "0%";
+            bloatMeter.style.backgroundColor = "var(--success)";
+
+            // Calcular Gas acumulado
+            let nivelGasBase = 10; // gas residual basal
+            let detalles = [];
+
+            seleccionados.forEach(id => {
+                const item = alimentos.find(f => f.id === id);
+                nivelGasBase += item.gas;
+                detalles.push(`• <strong>${item.nombre}:</strong> ${item.desc}`);
+            });
+
+            // Animación de Despegue (0 a 35,000 ft)
+            let altitud = 0;
+            const interval = setInterval(() => {
+                altitud += 1000;
+                altimeter.innerText = `Altitud: ${altitud.toLocaleString()} ft`;
+                
+                if (altitud >= 35000) {
+                    clearInterval(interval);
+                    
+                    // Ley de Boyle: Al disminuir la presión atmosférica, el gas se expande (un ~30%)
+                    const factorExpansion = 1.30; 
+                    const expansionFinal = Math.min(nivelGasBase * factorExpansion, 100);
+
+                    // Animación visual de la burbuja de gas
+                    const escala = 1 + (expansionFinal / 50); 
+                    bubble.style.transform = `scale(${escala})`;
+
+                    // Barra de malestar
+                    bloatMeter.style.width = `${expansionFinal}%`;
+
+                    if (expansionFinal > 50) {
+                        bloatMeter.style.backgroundColor = "var(--danger)";
+                    } else if (expansionFinal > 30) {
+                        bloatMeter.style.backgroundColor = "#eab308";
+                    }
+
+                    // Reporte Educativo
+                    let estado = expansionFinal > 50 
+                        ? `<span class="badge badge-danger">SÍNTOMAS SEVEROS</span><br><strong>¡Atención!</strong> Experimentas cólicos, severa distensión abdominal y opresión por la expansión de gases a 35,000 pies.`
+                        : `<span class="badge badge-success">VUELO CONFORTABLE</span><br><strong>¡Excelente!</strong> La expansión gástrica fue mínima y fisiológicamente tolerable.`;
+
+                    feedbackArea.innerHTML = `
+                        ${estado}
+                        <hr style="border-color: #334155; margin: 10px 0;">
+                        <p><strong>Explicación Científica:</strong> Al ascender, la presión de cabina cae. Por la física de gases, el volumen atrapado en el estómago/intestino se expande hasta un <strong>30%</strong>.</p>
+                        <p><strong>Resumen de tu menú:</strong></p>
+                        ${detalles.join('<br>')}
+                    `;
+                }
+            }, 50);
+        }
+
+        renderMenu();
+    </script>
+</body>
+</html>
